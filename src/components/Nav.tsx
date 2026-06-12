@@ -21,6 +21,12 @@ export default function Nav() {
             Dashboard
           </Link>
           <Link
+            href="/insights"
+            className="mono-label rounded-full px-4 py-2 text-cream-dim transition-colors hover:text-cream"
+          >
+            Insights
+          </Link>
+          <Link
             href="/dashboard"
             className="mono-label rounded-full border border-signal/50 bg-signal/10 px-4 py-2 text-signal transition-colors hover:bg-signal hover:text-ink"
           >

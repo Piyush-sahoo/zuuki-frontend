@@ -18,6 +18,42 @@ export interface AddWebsiteInput {
   name?: string;
 }
 
+export type LeadScore = "hot" | "warm" | "cold";
+
+export interface Lead {
+  call_id: string;
+  website_name?: string | null;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  intent?: string | null;
+  interestedIn?: string | null;
+  leadScore?: LeadScore | null;
+  sentiment?: string | null;
+  wantsCallback?: boolean | null;
+  summary?: string | null;
+  type?: string | null;
+  callbackPlaced?: boolean | null;
+  created_at?: string | null;
+}
+
+export interface Analytics {
+  totals: {
+    calls: number;
+    web: number;
+    phone: number;
+    leads: number;
+    hotLeads: number;
+    avgDurationSec: number;
+    totalCost: number;
+    callbacks: number;
+  };
+  overTime: { date: string; count: number }[];
+  perAgent: { name: string; calls: number; leads: number }[];
+  topGaps: { question: string; count: number }[];
+  sentiment: Record<string, number>;
+}
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000/api";
 
@@ -67,6 +103,8 @@ export const api = {
     }),
   deleteWebsite: (id: string) =>
     request<void>(`/websites/${id}`, { method: "DELETE" }),
+  getAnalytics: () => request<Analytics>("/analytics"),
+  getLeads: () => request<Lead[]>("/leads"),
 };
 
 export { ApiError };
