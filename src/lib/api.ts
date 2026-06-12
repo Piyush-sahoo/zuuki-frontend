@@ -10,6 +10,10 @@ export interface Website {
   status: WebsiteStatus;
   vapi_agent_id?: string | null;
   embed_code?: string | null;
+  bolna_agent_id?: string | null;
+  rag_id?: string | null;
+  inbound_number?: string | null;
+  provider?: string | null;
   created_at: string;
 }
 
@@ -105,6 +109,11 @@ export const api = {
     request<void>(`/websites/${id}`, { method: "DELETE" }),
   getAnalytics: () => request<Analytics>("/analytics"),
   getLeads: () => request<Lead[]>("/leads"),
+  callMe: (id: string, number: string) =>
+    request<{ status: string; number: string; call_id: string }>(
+      `/agents/${id}/call`,
+      { method: "POST", body: JSON.stringify({ number }) },
+    ),
 };
 
 export { ApiError };

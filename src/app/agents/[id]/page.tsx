@@ -8,6 +8,7 @@ import WaveBars from "@/components/WaveBars";
 import StatusBadge from "@/components/StatusBadge";
 import EmbedCodeBlock from "@/components/EmbedCodeBlock";
 import VapiWidget from "@/components/VapiWidget";
+import CallMeForm from "@/components/CallMeForm";
 import { api, ApiError, type Website } from "@/lib/api";
 
 function hostOf(url: string) {
@@ -123,9 +124,14 @@ export default function AgentDetailPage() {
               </div>
             ) : (
               <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-                {/* Live demo */}
+                {/* Live demo — phone (Bolna) or web widget (VAPI) */}
                 <div className="rise min-w-0" style={{ animationDelay: "60ms" }}>
-                  {site.vapi_agent_id ? (
+                  {site.bolna_agent_id ? (
+                    <CallMeForm
+                      websiteId={site.id}
+                      inboundNumber={site.inbound_number}
+                    />
+                  ) : site.vapi_agent_id ? (
                     <VapiWidget assistantId={site.vapi_agent_id} />
                   ) : null}
                 </div>
@@ -135,7 +141,7 @@ export default function AgentDetailPage() {
                   className="rise flex min-w-0 flex-col gap-6"
                   style={{ animationDelay: "120ms" }}
                 >
-                  {site.embed_code && (
+                  {site.embed_code && !site.bolna_agent_id && (
                     <EmbedCodeBlock
                       code={site.embed_code}
                       agentName={site.name ?? hostOf(site.url)}
@@ -148,9 +154,11 @@ export default function AgentDetailPage() {
                     </span>
                     <dl className="mt-4 flex flex-col gap-3 font-mono text-sm">
                       <div className="flex items-center justify-between gap-4">
-                        <dt className="shrink-0 text-cream-faint">VAPI ID</dt>
+                        <dt className="shrink-0 text-cream-faint">
+                          {site.bolna_agent_id ? "Bolna ID" : "VAPI ID"}
+                        </dt>
                         <dd className="min-w-0 truncate text-cream-dim">
-                          {site.vapi_agent_id}
+                          {site.bolna_agent_id ?? site.vapi_agent_id}
                         </dd>
                       </div>
                       <div className="flex items-center justify-between gap-4">
