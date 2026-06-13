@@ -27,7 +27,7 @@ export default function Nav() {
             Insights
           </Link>
           <Link
-            href="/dashboard"
+            href="/new"
             className="mono-label rounded-full border border-signal/50 bg-signal/10 px-4 py-2 text-signal transition-colors hover:bg-signal hover:text-ink"
           >
             New agent →

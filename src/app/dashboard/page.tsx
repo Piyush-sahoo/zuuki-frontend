@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Nav from "@/components/Nav";
-import AddWebsiteForm from "@/components/AddWebsiteForm";
 import WebsiteCard from "@/components/WebsiteCard";
 import WaveBars from "@/components/WaveBars";
 import { api, ApiError, type Website } from "@/lib/api";
@@ -67,15 +67,27 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Add form */}
+        {/* New-agent CTA → wizard */}
         <div className="rise mt-10" style={{ animationDelay: "80ms" }}>
-          <AddWebsiteForm
-            onCreated={(w) => setSites((prev) => [w, ...prev])}
-          />
-          <p className="mt-3 px-1 font-mono text-xs text-cream-faint">
-            Building takes ~1–2 minutes — crawl, knowledge base, then a custom
-            voice persona. The list updates itself.
-          </p>
+          <Link
+            href="/new"
+            className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-panel/60 p-5 transition-all hover:-translate-y-0.5 hover:border-signal/40 hover:bg-panel"
+          >
+            <div className="flex items-center gap-4">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-ink">
+                <WaveBars bars={4} active={false} className="h-5 transition-opacity group-hover:opacity-100" />
+              </span>
+              <div>
+                <h2 className="font-display text-2xl">Build a new agent</h2>
+                <p className="font-mono text-xs text-cream-faint">
+                  Link → persona → knowledge → prompt → tools → phone number
+                </p>
+              </div>
+            </div>
+            <span className="mono-label rounded-full border border-signal/50 bg-signal/10 px-5 py-2.5 text-signal transition-colors group-hover:bg-signal group-hover:text-ink">
+              Start →
+            </span>
+          </Link>
         </div>
 
         {/* List */}

@@ -20,6 +20,58 @@ export interface Website {
 export interface AddWebsiteInput {
   url: string;
   name?: string;
+  role?: string;
+  tone?: string;
+  language?: string;
+  voice?: string;
+  instructions?: string;
+  greeting?: string;
+}
+
+export interface VoiceOptions {
+  voices: { id: string; label: string }[];
+  languages: { code: string; label: string }[];
+  tones: string[];
+  roles: string[];
+}
+
+export interface Draft {
+  draft_id: string;
+  url: string;
+  name: string;
+  status: "crawling" | "ready" | "failed";
+  prompt: string | null;
+  knowledge_preview?: string;
+  pages?: number | null;
+  rag_id?: string | null;
+  crawl_done?: number;
+  crawl_total?: number;
+  crawl_status?: string | null;
+}
+
+export interface PhoneNumber {
+  id: string;
+  phone_number: string;
+  provider: string;
+}
+
+export interface DraftInput {
+  url: string;
+  name?: string;
+  role?: string;
+  tone?: string;
+  language?: string;
+  voice?: string;
+}
+
+export interface BuildInput {
+  prompt: string;
+  voice?: string;
+  language?: string;
+  greeting?: string;
+  tools?: string[];
+  transfer_number?: string;
+  phone_number_id?: string;
 }
 
 export type LeadScore = "hot" | "warm" | "cold";
@@ -109,6 +161,19 @@ export const api = {
     request<void>(`/websites/${id}`, { method: "DELETE" }),
   getAnalytics: () => request<Analytics>("/analytics"),
   getLeads: () => request<Lead[]>("/leads"),
+  getVoiceOptions: () => request<VoiceOptions>("/voice-options"),
+  getPhoneNumbers: () => request<PhoneNumber[]>("/phone-numbers"),
+  createDraft: (input: DraftInput) =>
+    request<{ draft_id: string; status: string }>("/agents/draft", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  getDraft: (id: string) => request<Draft>(`/agents/draft/${id}`),
+  buildAgent: (id: string, input: BuildInput) =>
+    request<Website>(`/agents/draft/${id}/build`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
   callMe: (id: string, number: string) =>
     request<{ status: string; number: string; call_id: string }>(
       `/agents/${id}/call`,
