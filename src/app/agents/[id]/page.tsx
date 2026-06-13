@@ -9,6 +9,7 @@ import StatusBadge from "@/components/StatusBadge";
 import EmbedCodeBlock from "@/components/EmbedCodeBlock";
 import VapiWidget from "@/components/VapiWidget";
 import CallMeForm from "@/components/CallMeForm";
+import VoiceChat from "@/components/VoiceChat";
 import { api, ApiError, type Website } from "@/lib/api";
 
 function hostOf(url: string) {
@@ -124,13 +125,16 @@ export default function AgentDetailPage() {
               </div>
             ) : (
               <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-                {/* Live demo — phone (Bolna) or web widget (VAPI) */}
-                <div className="rise min-w-0" style={{ animationDelay: "60ms" }}>
+                {/* Live demo — phone (Bolna) + browser (Cartesia), or web widget (VAPI) */}
+                <div className="rise flex min-w-0 flex-col gap-4" style={{ animationDelay: "60ms" }}>
                   {site.bolna_agent_id ? (
-                    <CallMeForm
-                      websiteId={site.id}
-                      inboundNumber={site.inbound_number}
-                    />
+                    <>
+                      <CallMeForm
+                        websiteId={site.id}
+                        inboundNumber={site.inbound_number}
+                      />
+                      <VoiceChat websiteId={site.id} />
+                    </>
                   ) : site.vapi_agent_id ? (
                     <VapiWidget assistantId={site.vapi_agent_id} />
                   ) : null}

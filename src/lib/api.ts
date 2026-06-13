@@ -116,4 +116,25 @@ export const api = {
     ),
 };
 
+export interface VoiceTurn {
+  transcript: string;
+  reply: string;
+  audio: string | null; // base64 mp3
+}
+
+/** Browser voice loop: send a recorded clip, get back the agent's spoken reply. */
+export async function voiceTurn(
+  websiteId: string,
+  audio: Blob,
+  history: { role: string; content: string }[],
+): Promise<VoiceTurn> {
+  const fd = new FormData();
+  fd.append("website_id", websiteId);
+  fd.append("history", JSON.stringify(history));
+  fd.append("audio", audio, "clip.webm");
+  const res = await fetch(`${API_BASE}/voice/turn`, { method: "POST", body: fd });
+  if (!res.ok) throw new ApiError(res.status, "Voice turn failed");
+  return (await res.json()) as VoiceTurn;
+}
+
 export { ApiError };
