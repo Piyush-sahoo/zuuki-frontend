@@ -72,6 +72,7 @@ export interface BuildInput {
   tools?: string[];
   transfer_number?: string;
   phone_number_id?: string;
+  phone_number?: string;
 }
 
 export type LeadScore = "hot" | "warm" | "cold";

@@ -90,6 +90,7 @@ export default function NewAgentPage() {
         prompt, voice, language, greeting: greeting.trim() || undefined,
         tools, transfer_number: transfer ? transferNumber.trim() : undefined,
         phone_number_id: phoneNumberId || undefined,
+        phone_number: numbers.find((n) => n.id === phoneNumberId)?.phone_number,
       });
       router.push(`/agents/${site.id}`);
     } catch (e) {
