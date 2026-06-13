@@ -175,6 +175,8 @@ export const api = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+  syncCalls: () =>
+    request<{ agents: number; calls_synced: number }>("/sync", { method: "POST" }),
   callMe: (id: string, number: string) =>
     request<{ status: string; number: string; call_id: string }>(
       `/agents/${id}/call`,

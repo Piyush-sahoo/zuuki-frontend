@@ -53,6 +53,7 @@ export default function InsightsPage() {
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -69,9 +70,23 @@ export default function InsightsPage() {
     }
   }, []);
 
+  // Pull the latest post-call analysis from Bolna's executions API, then refresh.
+  const sync = useCallback(async () => {
+    setSyncing(true);
+    try {
+      await api.syncCalls();
+      await load();
+    } catch {
+      /* best-effort; the 6s poll still refreshes */
+    } finally {
+      setSyncing(false);
+    }
+  }, [load]);
+
   // Poll so the dashboard updates live as calls land during a demo.
   useEffect(() => {
     load();
+    sync(); // backfill transcripts/leads from the executions API on open
     const tick = () => {
       timer.current = setTimeout(async () => {
         await load();
@@ -82,7 +97,7 @@ export default function InsightsPage() {
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [load]);
+  }, [load, sync]);
 
   function exportCsv() {
     const blob = new Blob([leadsToCsv(leads)], { type: "text/csv" });
@@ -106,9 +121,18 @@ export default function InsightsPage() {
             <span className="mono-label text-cream-faint">Conversation intelligence</span>
             <h1 className="mt-2 font-display text-5xl md:text-6xl">Insights</h1>
           </div>
-          <span className="mono-label hidden items-center gap-2 text-cream-faint sm:flex">
-            <WaveBars bars={4} className="h-3" /> live · updates every 6s
-          </span>
+          <div className="hidden items-center gap-4 sm:flex">
+            <button
+              onClick={sync}
+              disabled={syncing}
+              className="mono-label rounded-full border border-line px-4 py-2 text-cream-dim transition hover:border-signal hover:text-signal disabled:opacity-50"
+            >
+              {syncing ? "Syncing…" : "Sync calls"}
+            </button>
+            <span className="mono-label flex items-center gap-2 text-cream-faint">
+              <WaveBars bars={4} className="h-3" /> live · updates every 6s
+            </span>
+          </div>
         </div>
 
         {loading ? (
